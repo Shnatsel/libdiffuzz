@@ -64,7 +64,7 @@
 /* Canary & clobber bytes: */
 
 #define ALLOC_CANARY  0xAACCAACC
-#define ALLOC_CLOBBER 0xCC
+int alloc_clobber_counter = 0;
 
 #define PTR_C(_p) (((u32*)(_p))[-1])
 #define PTR_L(_p) (((u32*)(_p))[-2])
@@ -187,7 +187,7 @@ void* malloc(size_t len) {
 
   DEBUGF("malloc(%zu) = %p [%zu total]", len, ret, total_mem);
 
-  if (ret && len) memset(ret, ALLOC_CLOBBER, len);
+  if (ret && len) memset(ret, alloc_clobber_counter++, len);
 
   return ret;
 
