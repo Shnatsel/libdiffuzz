@@ -25,8 +25,7 @@
 #include <limits.h>
 #include <sys/mman.h>
 
-#include "../config.h"
-#include "../types.h"
+#include "./types.h"
 
 #ifndef PAGE_SIZE
 #  define PAGE_SIZE 4096
@@ -35,6 +34,9 @@
 #ifndef MAP_ANONYMOUS
 #  define MAP_ANONYMOUS MAP_ANON
 #endif /* !MAP_ANONYMOUS */
+
+/* Maximum allocator request size (keep well under INT_MAX): */
+#define MAX_ALLOC           0x40000000
 
 /* Error / message handling: */
 

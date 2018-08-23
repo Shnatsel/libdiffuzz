@@ -16,14 +16,12 @@
 PREFIX      ?= /usr/local
 HELPER_PATH  = $(PREFIX)/lib/afl
 
-VERSION     = $(shell grep '^\#define VERSION ' ../config.h | cut -d '"' -f2)
-
 CFLAGS      ?= -O3 -funroll-loops
 CFLAGS      += -Wall -D_FORTIFY_SOURCE=2 -g -Wno-pointer-sign
 
 all: libdislocator.so
 
-libdislocator.so: libdislocator.so.c ../config.h
+libdislocator.so: libdislocator.so.c
 	$(CC) $(CFLAGS) -shared -fPIC $< -o $@ $(LDFLAGS)
 
 .NOTPARALLEL: clean
