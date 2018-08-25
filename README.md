@@ -44,6 +44,8 @@ Oh - if the output is inherently non-deterministic, you're out of luck.
 
 ## Limitations and future work
 
+Unlike memory sanitizer, this thing will not make your program crash as soon as a read from uninitialized memory occurs. Instead, it lets you detect that it has occurred after the fact and only if the contents of uninitialized memory leak into the output. I.e. this will help you notice security vulnerabilities, but will not really aid in debugging.
+
 I have no idea how the global counter in C inside `malloc()` will behave in multi-threaded programs. FWIW I have just as much idea about what would happen if I made the counter atomic. So for now, be warned that in multi-threaded programs it may or may not actually detect uninitialized memory access. Contributions are welcome. For now you can work around this by applying the same hack as for black-box binaries.
 
 This may miss single-byte uninitialized reads because the counter is `u16`; if you need to detect those, change it to `u8`, but be warned that it will be more likely to miss uninitialized reads that way.
