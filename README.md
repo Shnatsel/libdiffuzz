@@ -32,7 +32,14 @@ This library also inherits all the checks that upstream libdislocator performs; 
  1. Make sure [this code](https://gist.github.com/Shnatsel/0c024a51b64c6e0b6c6e66f991904816) doesn't reliably crash when run on its own, but does crash when you run it like this: `LD_PRELOAD=/path/to/libdislocator.so target/release/membleed`
  1. If you haven't done regular fuzzing yet - do set up fuzzing with AFL. [It's not that hard.](https://fuzz.rs/book/afl/setup.html) Make sure you use the in-process mode, i.e. the `fuzz!` macro.
  1. In your fuzz target run the same operation twice and `assert!` that they produce the same result. **TODO:** example
- 1. Run the [AFL.rs](https://github.com/rust-fuzz/afl.rs) fuzz target like this: `AFL_PRELOAD=/path/to/libdislocator.so cargo afl fuzz ...`
+ 1. Add the following to your fuzz harness:
+ ```rust
+// Use the system allocator so we can substitute it with a custom one via LD_PRELOAD
+use std::alloc::System;
+#[global_allocator]
+static GLOBAL: System = System;
+ ```
+ 6. Run the [AFL.rs](https://github.com/rust-fuzz/afl.rs) fuzz target like this: `AFL_PRELOAD=/path/to/libdislocator.so cargo afl fuzz ...`
 
 ## Auditing black-box binaries
 
