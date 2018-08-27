@@ -61,9 +61,9 @@ This may miss single-byte uninitialized reads because the counter is `u16`; if y
 
 Since this is a fork of libdislocator, which is a poor man's [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html), this is now poor man's ASAN+MSAN in one package. If you're interested in just the MSAN-like bits (e.g. if you did get the real ASAN running already), decoupling the "initialize buffer to specific values" bit into a separate library and dropping the rest of libdislocator might be worthwhile. For my purposes this all-in-one thing has been fast enough, but your mileage may vary.
 
-Also, if you go down the "just MSAN" road, you might as well RIIR and/or write it as a Rust-specific allocator, now that the relevant traits are stabilized. Rust-specific allocator sure is going to be more ergonomic, but I'd much rather fix MSAN.
-
 There seems to be a memory leak in this library somewhere, which makes it unusable for persistent fuzzers such as honggfuzz. It's likely somewhere in libdislocator part (canaries around allocated memory?), reinforcing the theme of decoupling this from libdislocator.
+
+Also, if you go down the "just MSAN" road, you might as well RIIR and/or write it as a Rust-specific allocator, now that the relevant traits are stabilized. Rust-specific allocator sure is going to be more ergonomic, but I'd much rather fix MSAN.
 
 Also, I should either upstream this into AFL at some point or, failing that, hand this over to @rust-fuzz folks.
 
