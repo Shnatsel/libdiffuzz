@@ -68,4 +68,4 @@ List of previously unknown (i.e. zero-day) vulnerabilities found using this tool
 
 ## See also
 
-[libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), poor man's Address Sanitizer that libdiffuzz is based on.
+[libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), poor man's [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries. libdiffuzz is based on libdislocator code.
