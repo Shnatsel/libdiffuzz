@@ -1,11 +1,14 @@
 /*
 
-   american fuzzy lop - dislocator, an abusive allocator
-   -----------------------------------------------------
+   libdiffuzz: memory allocator that helps discover
+               reads from uninitialized memory.
 
-   Written and maintained by Michal Zalewski <lcamtuf@google.com>
+   Written by Sergey Davidoff <shnatsel@gmail.com>
+   based on american fuzzy lop's dislocator, which is
+   written and maintained by Michal Zalewski <lcamtuf@google.com>
 
-   Copyright 2016 Google Inc. All rights reserved.
+   libdiffuzz:    Copyright 2018 Sergey Davidoff
+   libdislocator: Copyright 2016 Google Inc. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
