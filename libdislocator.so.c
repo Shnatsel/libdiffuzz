@@ -196,7 +196,7 @@ void* malloc(size_t len) {
 }
 
 
-/* The wrapper for free(). This simply marks the entire region as PROT_NONE.
+/* The wrapper for free().
    If the region is already freed, the code will segfault during the attempt to
    read the canary. Not very graceful, but works, right? */
 
@@ -214,15 +214,9 @@ void free(void* ptr) {
 
   total_mem -= len;
 
-  /* Protect everything. Note that the extra page at the end is already
-     set as PROT_NONE, so we don't need to touch that. */
-
   ptr -= PAGE_SIZE * PG_COUNT(len + 8) - len - 8;
 
-  if (mprotect(ptr - 8, PG_COUNT(len + 8) * PAGE_SIZE, PROT_NONE))
-    FATAL("mprotect() failed when freeing memory");
-
-  /* Keep the mapping; this is wasteful, but prevents ptr reuse. */
+  munmap(ptr - 8, (1 + PG_COUNT(len + 8)) * PAGE_SIZE);
 
 }
 
