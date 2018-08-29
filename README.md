@@ -15,7 +15,7 @@ This is a drop-in replacement for OS memory allocator that can be used to detect
 
 When injected into a process, this library initializes every subsequent allocated region of memory to different values. Using this library you can detect uses of uninitialized memory simply by running a certain operation twice *in the same process* and comparing the outputs; if they differ, then the code uses uninitialized memory somewhere.
 
-Combine this with a fuzzer (e.g. [AFL](http://lcamtuf.coredump.cx/afl/), [honggfuzz](http://honggfuzz.com/)) to automatically discover cases when this happens. (This is called "differential fuzzing", hence the name).
+Combine this with a fuzzer (e.g. [AFL](http://lcamtuf.coredump.cx/afl/), [honggfuzz](http://honggfuzz.com/)) to automatically discover cases when this happens. This is called "differential fuzzing", hence the name.
 
 Naturally, this is conditional on the same operation run twice returning the same results normally. If that is not the case in your program and you cannot make it deterministic - you're out of luck.
 
@@ -40,7 +40,7 @@ use std::alloc::System;
 #[global_allocator]
 static GLOBAL: System = System;
  ```
- 6. Run the [AFL.rs](https://github.com/rust-fuzz/afl.rs) fuzz target like this: `AFL_PRELOAD=/path/to/libdiffuzz.so cargo afl fuzz ...`
+ 6. Run the fuzz target like this: `AFL_PRELOAD=/path/to/libdiffuzz.so cargo afl fuzz ...`
 
 ## Auditing black-box binaries
 
