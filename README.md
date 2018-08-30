@@ -32,7 +32,7 @@ Naturally, this is conditional on the same operation run twice returning the sam
  1. Clone this repository, run `make`; this will build libdiffuzz.so
  1. Make sure [this code](https://gist.github.com/Shnatsel/0c024a51b64c6e0b6c6e66f991904816) doesn't reliably crash when run on its own, but does crash when you run it like this: `LD_PRELOAD=/path/to/libdiffuzz.so target/release/membleed`
  1. If you haven't done regular fuzzing yet - do set up fuzzing with AFL. [It's not that hard.](https://fuzz.rs/book/afl/setup.html)
- 1. In your fuzz target run the same operation twice and `assert!` that they produce the same result. See [example code for Claxon](https://github.com/Shnatsel/claxon-differential-fuzzing) for reference.
+ 1. In your fuzz target run the same operation twice and `assert!` that they produce the same result. See [example fuzz target for lodepng-rust](https://github.com/Shnatsel/lodepng-afl-fuzz-differential) for reference.
  1. Add the following to your fuzz harness:
  ```rust
 // Use the system allocator so we can substitute it with a custom one via LD_PRELOAD
