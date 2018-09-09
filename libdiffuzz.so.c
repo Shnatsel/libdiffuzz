@@ -69,7 +69,7 @@
 /* Canary & clobber bytes: */
 
 #define ALLOC_CANARY  0xAACCAACC
-u16 alloc_clobber_counter = 0;
+static u16 alloc_clobber_counter = 0;
 
 #define PTR_C(_p) (((u32*)(_p))[-1])
 #define PTR_L(_p) (((u32*)(_p))[-2])
