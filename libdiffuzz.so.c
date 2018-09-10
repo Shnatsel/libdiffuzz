@@ -70,6 +70,8 @@
 
 #define ALLOC_CANARY  0xAACCAACC
 static u16 alloc_clobber_counter = 0;
+// extra amount of bytes to clobber after the allocation
+#define CLOBBER_EXTRA_BYTES 512 
 
 #define PTR_C(_p) (((u32*)(_p))[-1])
 #define PTR_L(_p) (((u32*)(_p))[-2])
@@ -180,13 +182,17 @@ void* calloc(size_t elem_len, size_t elem_cnt) {
 }
 
 
-/* The wrapper for malloc(). Roughly the same, also clobbers the returned
-   memory (unlike calloc(), malloc() is not guaranteed to return zeroed
-   memory). */
+/* The wrapper for malloc().
+   Roughly the same, also clobbers the returned memory
+   (unlike calloc(), malloc() is not guaranteed to return zeroed memory).
+   Allocates additional CLOBBER_EXTRA_BYTES after the buffer
+   and clobbers those as well to detect out-of-bounds reads. */
 
-void* malloc(size_t len) {
+void* malloc(size_t requested_len) {
 
   void* ret;
+
+  size_t len = requested_len + CLOBBER_EXTRA_BYTES;
 
   ret = __dislocator_alloc(len);
 
