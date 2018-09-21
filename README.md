@@ -29,6 +29,10 @@ Naturally, this is conditional on the same operation run twice returning the sam
 
 ## Quick start for Rust code
 
+If your code does not contain `unsafe` blocks, you don't need to do a thing! Your code is already secure!
+
+However, if you have read from [the black book](https://doc.rust-lang.org/nomicon/) and invoked the Old Ones...
+
  1. Clone this repository, run `make`; this will build libdiffuzz.so
  1. Make sure [this code](https://gist.github.com/Shnatsel/0c024a51b64c6e0b6c6e66f991904816) doesn't reliably crash when run on its own, but does crash when you run it like this: `LD_PRELOAD=/path/to/libdiffuzz.so target/release/membleed`
  1. If you haven't done regular fuzzing yet - do set up fuzzing with AFL. [It's not that hard.](https://fuzz.rs/book/afl/setup.html)
