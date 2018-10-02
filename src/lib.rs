@@ -15,7 +15,7 @@ static MEM_INIT: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 static CONF_ALLOC_EXTRA_MEM: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 
 pub extern fn libdiffuzz_init_config() {
-    if !env::var_os("AFL_LD_DETERMINISTIC_INIT").is_some() {
+    if env::var_os("AFL_LD_DETERMINISTIC_INIT").is_none() {
         MEM_INIT.store(
             rand::thread_rng().gen::<u8>().into(),
             atomic::Ordering::Relaxed,
@@ -51,7 +51,7 @@ pub unsafe extern "C" fn malloc(len: usize) -> *mut c_void {
     // This is guaranteed to be aligned
     *(ptr as *mut usize) = full_len;
     ptr = ptr.offset(CANARY_SIZE as isize);
-    libc::memset(ptr, get_mem_init() as _, len + alloc_extra_mem);
+    libc::memset(ptr, get_mem_init().into(), len + alloc_extra_mem);
     ptr
 }
 
@@ -77,7 +77,7 @@ pub unsafe extern "C" fn calloc(n_items: usize, item_len: usize) -> *mut c_void 
     libc::memset(ptr, 0, len);
     libc::memset(
         ptr.offset(len as isize),
-        get_mem_init() as _,
+        get_mem_init().into(),
         alloc_extra_mem,
     );
     ptr
