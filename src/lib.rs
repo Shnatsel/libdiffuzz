@@ -11,8 +11,8 @@ use std::sync::atomic::{self, AtomicUsize};
 
 const CANARY_SIZE: usize = mem::size_of::<usize>();
 
-const MEM_INIT: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
-const CONF_ALLOC_EXTRA_MEM: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
+static MEM_INIT: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
+static CONF_ALLOC_EXTRA_MEM: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 
 pub extern fn libdiffuzz_init_config() {
     if !env::var_os("AFL_LD_DETERMINISTIC_INIT").is_some() {
