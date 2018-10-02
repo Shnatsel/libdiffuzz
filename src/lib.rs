@@ -93,10 +93,13 @@ pub unsafe extern "C" fn free(ptr: *mut c_void) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn realloc(orig_ptr: *mut c_void, len: usize) -> *mut c_void {
+pub unsafe extern "C" fn realloc(orig_ptr: *mut c_void, new_len: usize) -> *mut c_void {
+    if orig_ptr.is_null() {
+        return malloc(new_len);
+    }
     let orig_len = *(orig_ptr.offset(-(CANARY_SIZE as isize)) as *const usize);
-    let new_ptr = malloc(len);
-    libc::memcpy(new_ptr, orig_ptr, cmp::min(len, orig_len));
+    let new_ptr = malloc(new_len);
+    libc::memcpy(new_ptr, orig_ptr, cmp::min(new_len, orig_len));
     free(orig_ptr);
     new_ptr
 }
