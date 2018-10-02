@@ -15,13 +15,13 @@ static MEM_INIT: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 static CONF_ALLOC_EXTRA_MEM: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 
 pub extern fn libdiffuzz_init_config() {
-    if env::var_os("AFL_LD_DETERMINISTIC_INIT").is_none() {
+    if env::var_os("LIBDIFFUZZ_NONDETERMINISTIC").is_some() {
         MEM_INIT.store(
             rand::thread_rng().gen::<u8>().into(),
             atomic::Ordering::Relaxed,
         );
     }
-    let alloc_extra_mem = env::var("AFL_LD_ALLOC_EXTRA_MEM")
+    let alloc_extra_mem = env::var("LIBDIFFUZZ_ALLOCATE_EXTRA_MEMORY")
         .ok()
         .and_then(|x| x.parse().ok())
         .unwrap_or(0);
