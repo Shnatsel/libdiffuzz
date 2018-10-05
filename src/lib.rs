@@ -39,7 +39,10 @@ fn get_mem_init() -> u8 {
 #[no_mangle]
 pub unsafe extern "C" fn malloc(len: usize) -> *mut c_void {
     let alloc_extra_mem = CONF_ALLOC_EXTRA_MEM.load(atomic::Ordering::Relaxed);
-    let full_len = len + CANARY_SIZE + alloc_extra_mem;
+    let full_len = match len.checked_add(CANARY_SIZE).and_then(|x| x.checked_add(alloc_extra_mem)) {
+        Some(x) => x,
+        None => return ptr::null_mut(),
+    };
     let mut ptr = libc::mmap(
         ptr::null_mut(),
         full_len,
@@ -62,7 +65,10 @@ pub unsafe extern "C" fn calloc(n_items: usize, item_len: usize) -> *mut c_void 
         None => return ptr::null_mut(),
     };
     let alloc_extra_mem = CONF_ALLOC_EXTRA_MEM.load(atomic::Ordering::Relaxed);
-    let full_len = len + CANARY_SIZE + alloc_extra_mem;
+    let full_len = match len.checked_add(CANARY_SIZE).and_then(|x| x.checked_add(alloc_extra_mem)) {
+        Some(x) => x,
+        None => return ptr::null_mut(),
+    };
     let mut ptr = libc::mmap(
         ptr::null_mut(),
         full_len,
