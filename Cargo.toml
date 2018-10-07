@@ -1,5 +1,5 @@
 [package]
-name = "libdiffuzz"
+name = "diffuzz"
 version = "0.1.0"
 authors = ["Lee Bousfield <ljbousfield@gmail.com>"]
 
