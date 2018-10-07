@@ -21,7 +21,7 @@ Naturally, this is conditional on the same operation run twice returning the sam
 
 ## TL;DR: usage
 
- 1. Clone this repository, run `make`; this will build libdiffuzz.so
+ 1. Clone this repository, run `cargo build --release`; this will build libdiffuzz.so and put it in `target/release`
  1. Make your code run the same operation twice in the same process and compare outputs.
  1. Run your code like this: `LD_PRELOAD=/path/to/libdiffuzz.so /path/to/your/binary`. If you're fuzzing with [AFL](http://lcamtuf.coredump.cx/afl/), use `AFL_PRELOAD=/path/to/libdiffuzz.so afl-fuzz ...` instead. If you're not fuzzing with AFL - you should!
  1. Brag that you've used differential fuzzing to find vulnerabilities in real code
@@ -32,7 +32,7 @@ If your code does not contain `unsafe` blocks, you don't need to do a thing! You
 
 However, if you have read from [the black book](https://doc.rust-lang.org/nomicon/) and invoked the Old Ones...
 
- 1. Clone this repository, run `make`; this will build libdiffuzz.so
+ 1. Clone this repository, run `cargo build --release`; this will build libdiffuzz.so and put it in `target/release`
  1. Make sure [this code](https://gist.github.com/Shnatsel/0c024a51b64c6e0b6c6e66f991904816) doesn't reliably crash when run on its own, but does crash when you run it like this: `LD_PRELOAD=/path/to/libdiffuzz.so target/release/membleed`
  1. If you haven't done regular fuzzing yet - do set up fuzzing with AFL. [It's not that hard.](https://fuzz.rs/book/afl/setup.html)
  1. In your fuzz target run the same operation twice and `assert!` that they produce the same result. See [example fuzz target for lodepng-rust](https://github.com/Shnatsel/lodepng-afl-fuzz-differential) for reference. [A more complicated example](https://github.com/Shnatsel/claxon-differential-fuzzing) is also available.
@@ -49,9 +49,9 @@ static GLOBAL: System = System;
 
 If your target binary lets you feed it the same input several times - stellar! Simply preload libdiffuzz-numbering into a binary, feed it the same input twice and compare the outputs.
 
-However, if your binary only accepts one input and then terminates, you will have to change the `u16 alloc_clobber_counter = 0;` in libdiffuzz-numbering to something unique to each process, such as milliseconds from system time, replace `alloc_clobber_counter++` in memset call with `alloc_clobber_counter`, then run the entire process twice and compare the outputs from the two runs. If they differ - congratulations, you've found a memory disclosure vulnerability!
+However, if your binary only accepts one input and then terminates, you will have to set the environment variable `LIBDIFFUZZ_NONDETERMINISTIC`.
 
-Oh - if the output is inherently non-deterministic, you're out of luck.
+Unfortunately, if the output is inherently non-deterministic, you're out of luck. To make it deterministic, you could try limiting it to one thread and overriding any other source of randomness.
 
 ## Limitations and future work
 
@@ -71,6 +71,6 @@ List of previously unknown (i.e. zero-day) vulnerabilities found using this tool
 
 ## See also
 
-[libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), poor man's [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries. libdiffuzz is based on libdislocator code.
+[libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), poor man's [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries. libdiffuzz is loosely based on libdislocator code.
 
 For background on how this project came about, see [How I've found vulnerability in a popular Rust crate (and you can too)](https://medium.com/@shnatsel/how-ive-found-vulnerability-in-a-popular-rust-crate-and-you-can-too-3db081a67fb).
