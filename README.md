@@ -59,10 +59,6 @@ Stack-based uninitialized reads are not detected.
 
 Unlike memory sanitizer, this thing will not make your program crash as soon as a read from uninitialized memory occurs. Instead, it lets you detect that it has occurred after the fact and only if the contents of uninitialized memory leak into the output. I.e. this will help you notice security vulnerabilities, but will not really aid in debugging.
 
-It currently does not reliably detect reads from uninitialized memory in multi-threaded programs. Pull requests switching the global counter to atomic type are [welcome](https://github.com/Shnatsel/libdiffuzz/issues/2). For now you can work around this by applying the same hack as for black-box binaries.
-
-This may miss single-byte uninitialized reads because the counter is `u16`; if you need to detect those, change it to `u8`, but be warned that it will be a bit more likely to miss uninitialized reads that way (one in 256 versus one in 65536).
-
 ## Trophy case
 
 List of previously unknown (i.e. zero-day) vulnerabilities found using this tool, to show that this whole idea is not completely bonkers:
