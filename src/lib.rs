@@ -28,7 +28,8 @@ pub extern fn libdiffuzz_init_config() {
     CONF_ALLOC_EXTRA_MEM.store(alloc_extra_mem, atomic::Ordering::Relaxed);
 }
 
-#[link_section = ".ctors"]
+#[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
+#[cfg_attr(not(target_os = "macos"), link_section = ".ctors")]
 pub static CONSTRUCTOR: extern fn() = libdiffuzz_init_config;
 
 /// Gets then increments MEM_INIT
