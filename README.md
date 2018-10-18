@@ -69,6 +69,8 @@ List of previously unknown (i.e. zero-day) vulnerabilities found using this tool
 
 ## See also
 
+[Valgrind](http://valgrind.org/), a perfectly serviceable tool to detect reads from uninitialized memory if you're willing to tolerate 20x slowdown and occasional false positives.
+
 [libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), a substitute for [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries.
 
 For background on how this project came about, see [How I've found vulnerability in a popular Rust crate (and you can too)](https://medium.com/@shnatsel/how-ive-found-vulnerability-in-a-popular-rust-crate-and-you-can-too-3db081a67fb).
