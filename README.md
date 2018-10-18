@@ -1,13 +1,11 @@
-## libdiffuzz: poor man's Memory Sanitizer
+## libdiffuzz: security-oriented alternative to Memory Sanitizer
 
-This is a drop-in replacement for OS memory allocator that can be used to detect uses of uninitialized memory. It is designed to be used in case [Memory Sanitizer](https://clang.llvm.org/docs/MemorySanitizer.html) is not available for some reason, such as:
+This is a drop-in replacement for OS memory allocator that can be used to detect uses of uninitialized memory. It is designed to be used in case [Memory Sanitizer](https://clang.llvm.org/docs/MemorySanitizer.html) is not applicable for some reason, such as:
 
  * Your code contains inline assembly or links to proprietary libraries that cannot be instrumented by MSAN
- * You're debugging code that is specific to an exotic CPU architecture where MSAN is not available
- * You're debugging code that is specific to a freaky operating system such as macOS where no sane development tools are available
- * You want to check Rust code for memory disclosure vulnerabilities and [Rust standard library still doesn't support MSAN](https://github.com/rust-lang/rust/issues/39610)
- * You want to check if the bug MSAN found is actually exploitable, i.e. if the uninitialized memory contents actually show up in the output
  * You want to find vulnerabilities in black-box binaries that you do not have the source code for (not always straightforward, see below)
+ * You want to check if the bug MSAN found is actually exploitable, i.e. if the uninitialized memory contents actually show up in the output
+ * You're debugging code that is specific to an exotic CPU architecture or operating sysem where MSAN is not available, such as macOS. If you're on a really obscure platform that doesn't have a Rust compiler, a less robust [C99 implementation](https://github.com/Shnatsel/libdiffuzz-c99) is available.
 
 **This is not a drop-in replacement for Memory Sanitizer!** It will likely require changes to your code or your testing setup, see below.
 
@@ -23,7 +21,11 @@ Naturally, this is conditional on the same operation run twice returning the sam
 
  1. Clone this repository, run `cargo build --release`; this will build libdiffuzz.so and put it in `target/release`
  1. Make your code run the same operation twice in the same process and compare outputs.
- 1. Run your code like this: `LD_PRELOAD=/path/to/libdiffuzz.so /path/to/your/binary`. If you're fuzzing with [AFL](http://lcamtuf.coredump.cx/afl/), use `AFL_PRELOAD=/path/to/libdiffuzz.so afl-fuzz ...` instead. If you're not fuzzing with AFL - you should!
+ 1. Run your code like this:
+    - On Linux/BSD/etc: `LD_PRELOAD=/path/to/libdiffuzz.so /path/to/your/binary`
+    - On macOS: `DYLD_INSERT_LIBRARIES=/path/to/libdiffuzz.so DYLD_FORCE_FLAT_NAMESPACE=1 /path/to/your/binary`
+    - If you're fuzzing with [AFL](http://lcamtuf.coredump.cx/afl/): `AFL_PRELOAD=/path/to/libdiffuzz.so afl-fuzz ...` regardless of platform. If you're not fuzzing with AFL - you should!
+ 1. Wait for it to crash
  1. Brag that you've used differential fuzzing to find vulnerabilities in real code
 
 ## Quick start for Rust code
@@ -47,11 +49,11 @@ static GLOBAL: System = System;
 
 ## Auditing black-box binaries
 
-If your target binary lets you feed it the same input several times - stellar! Simply preload libdiffuzz-numbering into a binary, feed it the same input twice and compare the outputs.
+Simply preload libdiffuzz into a binary (see "Usage" above), feed it the same input twice and compare the outputs. If they differ, it has exposes uninitialized memory in the output. 
 
-However, if your binary only accepts one input and then terminates, you will have to set the environment variable `LIBDIFFUZZ_NONDETERMINISTIC`.
+If your binary only accepts one input and then terminates, set the environment variable `LIBDIFFUZZ_NONDETERMINISTIC`; this will make output differ between runs. Without that variable set libdiffuzz tries to be as deterministic as possible to make its results reproducible.
 
-Unfortunately, if the output is inherently non-deterministic, you're out of luck. To make it deterministic, you could try limiting it to one thread and overriding any other source of randomness.
+If the output varies between runs under normal conditions, try forcing the binary to use just one thread and overriding any sources of randomness it has.
 
 ## Limitations and future work
 
@@ -67,6 +69,6 @@ List of previously unknown (i.e. zero-day) vulnerabilities found using this tool
 
 ## See also
 
-[libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), poor man's [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries. libdiffuzz is loosely based on libdislocator code.
+[libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), a substitute for [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries.
 
 For background on how this project came about, see [How I've found vulnerability in a popular Rust crate (and you can too)](https://medium.com/@shnatsel/how-ive-found-vulnerability-in-a-popular-rust-crate-and-you-can-too-3db081a67fb).
