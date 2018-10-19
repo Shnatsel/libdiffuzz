@@ -53,7 +53,7 @@ pub unsafe extern "C" fn malloc(len: usize) -> *mut c_void {
         0,
     );
     if ptr == libc::MAP_FAILED {
-        libc::PT_NULL as *mut libc::c_void
+        ptr::null_mut()
     } else {
         // This is guaranteed to be aligned
         *(ptr as *mut usize) = full_len;
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn calloc(n_items: usize, item_len: usize) -> *mut c_void 
         0,
     );
     if ptr == libc::MAP_FAILED {
-        libc::PT_NULL as *mut libc::c_void
+        ptr::null_mut()
     } else {
         // This is guaranteed to be aligned
         *(ptr as *mut usize) = full_len;
