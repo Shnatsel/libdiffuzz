@@ -52,11 +52,15 @@ pub unsafe extern "C" fn malloc(len: usize) -> *mut c_void {
         -1,
         0,
     );
-    // This is guaranteed to be aligned
-    *(ptr as *mut usize) = full_len;
-    ptr = ptr.offset(CANARY_SIZE as isize);
-    libc::memset(ptr, get_mem_init().into(), len + alloc_extra_mem);
-    ptr
+    if ptr == libc::MAP_FAILED {
+        ptr::null_mut()
+    } else {
+        // This is guaranteed to be aligned
+        *(ptr as *mut usize) = full_len;
+        ptr = ptr.offset(CANARY_SIZE as isize);
+        libc::memset(ptr, get_mem_init().into(), len + alloc_extra_mem);
+        ptr
+    }
 }
 
 #[no_mangle]
@@ -78,16 +82,20 @@ pub unsafe extern "C" fn calloc(n_items: usize, item_len: usize) -> *mut c_void 
         -1,
         0,
     );
-    // This is guaranteed to be aligned
-    *(ptr as *mut usize) = full_len;
-    ptr = ptr.offset(CANARY_SIZE as isize);
-    libc::memset(ptr, 0, len);
-    libc::memset(
-        ptr.offset(len as isize),
-        get_mem_init().into(),
-        alloc_extra_mem,
-    );
-    ptr
+    if ptr == libc::MAP_FAILED {
+        ptr::null_mut()
+    } else {
+        // This is guaranteed to be aligned
+        *(ptr as *mut usize) = full_len;
+        ptr = ptr.offset(CANARY_SIZE as isize);
+        libc::memset(ptr, 0, len);
+        libc::memset(
+            ptr.offset(len as isize),
+            get_mem_init().into(),
+            alloc_extra_mem,
+        );
+        ptr
+    }
 }
 
 #[no_mangle]
