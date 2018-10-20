@@ -5,7 +5,7 @@ This is a drop-in replacement for OS memory allocator that can be used to detect
  * Your code contains inline assembly or links to proprietary libraries that cannot be instrumented by MSAN
  * You want to find vulnerabilities in black-box binaries that you do not have the source code for (not always straightforward, see below)
  * You want to check if the bug MSAN found is actually exploitable, i.e. if the uninitialized memory contents actually show up in the output
- * You're debugging code that is specific to an exotic CPU architecture or operating sysem where MSAN is not available, such as macOS. If you're on a really obscure platform that doesn't have a Rust compiler, a less robust [C99 implementation](https://github.com/Shnatsel/libdiffuzz-c99) is available.
+ * You're debugging code that is specific to an exotic CPU architecture or operating system where MSAN is not available, such as macOS. If you're on a really obscure platform that doesn't have a Rust compiler, a less robust [C99 implementation](https://github.com/Shnatsel/libdiffuzz-c99) is available.
 
 **This is not a drop-in replacement for Memory Sanitizer!** It will likely require changes to your code or your testing setup, see below.
 
