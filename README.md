@@ -67,6 +67,8 @@ List of previously unknown (i.e. zero-day) vulnerabilities found using this tool
 
  1. [Memory disclosure](https://github.com/ruuda/claxon/issues/10) in [Claxon](https://github.com/ruuda/claxon)
 
+If you find bugs using libdiffuzz, please open a PR to add it here.
+
 ## See also
 
 [Valgrind](http://valgrind.org/), a perfectly serviceable tool to detect reads from uninitialized memory if you're willing to tolerate 20x slowdown and occasional false positives.
