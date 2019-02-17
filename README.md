@@ -73,6 +73,8 @@ If you find bugs using libdiffuzz, please open a PR to add it here.
 
 [Valgrind](http://valgrind.org/), a perfectly serviceable tool to detect reads from uninitialized memory if you're willing to tolerate 20x slowdown and occasional false positives.
 
+[MIRI](https://github.com/rust-lang/miri), an interpreter for Rust code that detects violations of Rust's safety rules. Great for debugging but unsuitable for guided fuzzing.
+
 [libdislocator](https://github.com/mirrorer/afl/tree/master/libdislocator), a substitute for [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) that also works with black-box binaries.
 
 For background on how this project came about, see [How I've found vulnerability in a popular Rust crate (and you can too)](https://medium.com/@shnatsel/how-ive-found-vulnerability-in-a-popular-rust-crate-and-you-can-too-3db081a67fb).
