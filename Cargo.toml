@@ -6,6 +6,10 @@ authors = ["Lee Bousfield <ljbousfield@gmail.com>"]
 [lib]
 crate-type = ["dylib"]
 
+[features]
+default = ["have_std"]
+have_std = ["libc", "rand"]
+
 [dependencies]
 libc = "0.2.43"
 rand = "0.5.5"
