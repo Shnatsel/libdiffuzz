@@ -30,6 +30,8 @@ Naturally, this is conditional on the same operation run twice returning the sam
 
 ## Quick start for Rust code
 
+**Note:** Memory Sanitizer [now works with Rust](https://doc.rust-lang.org/unstable-book/compiler-flags/sanitizer.html#memorysanitizer). You should probably use it instead of libdiffuzz!
+
 If your code does not contain `unsafe` blocks, you don't need to do a thing! Your code is already secure!
 
 However, if you have read from [the black book](https://doc.rust-lang.org/nomicon/) and invoked the Old Ones...
