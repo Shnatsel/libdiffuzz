@@ -75,7 +75,7 @@ If you find bugs using libdiffuzz, please open a PR to add it here.
 
 [Valgrind](http://valgrind.org/), a perfectly serviceable tool to detect reads from uninitialized memory if you're willing to tolerate 20x slowdown and occasional false positives.
 
-[Dr. Memory](http://drmemory.org/), which claims to be an improvement over Valgrind and also works with black-box binaries.
+[Dr. Memory](http://drmemory.org/), which claims to be an improvement over Valgrind.
 
 [MIRI](https://github.com/rust-lang/miri), an interpreter for Rust code that detects violations of Rust's safety rules. Great for debugging but unsuitable for guided fuzzing.
 
